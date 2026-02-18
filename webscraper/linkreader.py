@@ -87,9 +87,62 @@ for key in results:
       except:
         interest = None
       results[key]["Increased Interest"] = interest
+      try:
+          advisory_prereq_div = driver.find_element(By.CSS_SELECTOR, "div.prereq.advisory")
+          advisory_prereq = advisory_prereq_div.find_element(By.CSS_SELECTOR, "p.text-small").text
+      except:
+        advisory_prereq = None
+      results[key]["Advisory Prerequisites"] = advisory_prereq
+      try:
+        prereq_div = driver.find_element(By.CSS_SELECTOR, "div.prereq:not(.advisory)")
+        prereq = prereq_div.find_element(By.CSS_SELECTOR, "p.text-small").text
+      except:
+        prereq = None
+      results[key]["Enforced Prerequisites"] = prereq
     except: 
       print("Couldn't find all values for",key)
       pass
+    
+    # grab section info
+    try:
+      rows = driver.find_elements(By.CSS_SELECTOR, "tbody tr")
+      sections = []
+      for row in rows:
+          try:
+              btn = row.find_element(By.CSS_SELECTOR, "button.expand-btn")
+              btn.click()
+
+              section_name = None
+              section_title = None
+
+              try:
+                section_name = row.find_element(By.CSS_SELECTOR, "div.section-name").text.split("\n")[0].strip()
+              except:
+                pass
+              try:
+                section_title = row.find_element(By.CSS_SELECTOR, "span.course-title").text.strip()
+              except:
+                pass
+
+              description = None
+              try:
+                  next_row = driver.execute_script("return arguments[0].nextElementSibling;", row)
+                  desc_cell = next_row.find_element(By.CSS_SELECTOR, "td.section-description")
+                  description = desc_cell.text.strip()
+              except:
+                  pass
+
+              sections.append({"section": section_name, "title": section_title, "description": description})
+          except:
+            pass
+
+      if sections and sections[0][section_title]:
+        results[key]["Sections"] = sections
+      else:
+        results[key]["Sections"] = None
+
+    except:
+      pass 
 
 driver.close()
 
