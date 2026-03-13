@@ -25,7 +25,9 @@ chrome_options.add_argument("--no-sandbox")
 
 #path to chromedriver
 homedir = os.path.expanduser("~")
-webdriver_service = Service(f"{homedir}/chromedriver/stable/chromedriver")
+
+# webdriver_service = Service(f"C:/Users/danie/chromedriver/stable/chromedriver.exe")
+webdriver_service = Service()
 
 #create webdriver
 driver = webdriver.Chrome(service=webdriver_service,options=chrome_options)
@@ -118,11 +120,11 @@ for key in results:
               try:
                 section_name = row.find_element(By.CSS_SELECTOR, "div.section-name").text.split("\n")[0].strip()
               except:
-                pass
+                section_name = None
               try:
                 section_title = row.find_element(By.CSS_SELECTOR, "span.course-title").text.strip()
               except:
-                pass
+                section_title = None
 
               description = None
               try:
@@ -130,17 +132,14 @@ for key in results:
                   desc_cell = next_row.find_element(By.CSS_SELECTOR, "td.section-description")
                   description = desc_cell.text.strip()
               except:
-                  pass
+                  description = None
 
-              sections.append({"section": section_name, "title": section_title, "description": description})
+              # only add if section title exists - will not add things like unnamed lecture/discussion sections
+              if section_title:
+                sections.append({"section": section_name, "title": section_title, "description": description})
           except:
             pass
-
-      if sections and sections[0][section_title]:
-        results[key]["Sections"] = sections
-      else:
-        results[key]["Sections"] = None
-
+      results[key]["Sections"] = sections
     except:
       pass 
 

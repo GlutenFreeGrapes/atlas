@@ -16,14 +16,16 @@ chrome_options.add_argument("--no-sandbox")
 
 #path to chromedriver
 homedir = os.path.expanduser("~")
-webdriver_service = Service(f"{homedir}/chromedriver/stable/chromedriver")
+
+# webdriver_service = Service(f"C:/Users/danie/chromedriver/stable/chromedriver.exe")
+webdriver_service = Service()
 
 #create webdriver
 driver = webdriver.Chrome(service=webdriver_service,options=chrome_options)
 driver.implicitly_wait(10)
 
 driver.get("https://atlas.ai.umich.edu")
-time.sleep(40) #time to get duo login
+time.sleep(60) #time to get duo login
 driver.get("https://atlas.ai.umich.edu/courses/")
 flag=False
 results = {}
