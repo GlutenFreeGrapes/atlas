@@ -17,7 +17,6 @@ chrome_options.add_argument("--no-sandbox")
 #path to chromedriver
 homedir = os.path.expanduser("~")
 
-# webdriver_service = Service(f"C:/Users/danie/chromedriver/stable/chromedriver.exe")
 webdriver_service = Service()
 
 #create webdriver
